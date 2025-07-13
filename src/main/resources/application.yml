@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: jva-sbt-recargapay-app
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://192.168.0.200:5432/recargapay_db}
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:o49CJ645xMl15nsSgeV7c9Lm}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      org:
+        hibernate:
+          envers:
+            store_data_at_delete: true
+            global_with_modified_flag: true
+
+commons:
+  api:
+    swagger:
+      enabled: true
+      title: "jva-sbt-recargapay-app"
+      description: "jva-sbt-recargapay-app"
+      version: "1.0"
+      contact:
+        name: "jva-sbt-pocs-recargapay-app"
+        email: "3fautomacao@gmail.com.br"
+        url: "https://springshop.wiki.github.org/contact"
+      license:
+        name: "Apache 2.0"
+        url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+      external-docs:
+        description: "Find out more about jva-sbt-recargapay-app"
+        url: "https://springshop.wiki.github.org/docs"
+    security:
+      enabled: true
+      allowedClaim: "3fautomacao.com.br"
+      allowedOrigins: "*"
+      roles:
+        - "API_RECARGAPAY"
+      jwt:
+        issuer: "https://sso.3fautomacao.com.br/realms/master"
+        jwk: "${commons.api.security.jwt.issuer}/protocol/openid-connect/certs"
+      allowedUrls:
+        - "GET:/v2/api-docs"
+        - "GET:/v3/api-docs"
+        - "GET:/v3/api-docs/**"
+        - "GET:/configuration/ui"
+        - "GET:/actuator/**"
+        - "GET:/swagger-resources/**"
+        - "GET:/configuration/security"
+        - "GET:/swagger-ui.html"
+        - "GET:/swagger-ui/**"
+        - "GET:/webjars/**"
+        - "GET:/h2-console"
+        - "GET:/h2-console/**"
+        - "GET:/api/v1/problems/*"
+
+logging:
+  level:
+    com.recargapay: DEBUG
