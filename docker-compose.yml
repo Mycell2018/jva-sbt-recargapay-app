@@ -1,0 +1,7 @@
+services:
+
+  wallet-service:
+    image: jva-sbt-recargapay-app
+    container_name: jva-sbt-recargapay-app
+    ports:
+      - "8088:8080"
