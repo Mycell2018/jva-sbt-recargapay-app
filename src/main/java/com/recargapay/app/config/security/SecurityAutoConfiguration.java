@@ -28,6 +28,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @Configuration
@@ -67,7 +69,7 @@ public class SecurityAutoConfiguration {
 
         final List<AntPathRequestMatcher> allowedUrls = this.getAllowedUrls();
 
-        http.cors(cors -> cors.configurationSource(this::configureCors))
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(
@@ -116,25 +118,27 @@ public class SecurityAutoConfiguration {
     }
 
     @Bean
-    protected CorsConfiguration configureCors(HttpServletRequest configurationSource) {
+    public CorsConfigurationSource corsConfigurationSource() {
         log.debug("Starting CORS Configuration");
-        var corsConfiguration = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();
         log.debug("Allowed Origins: {}", this.securityProperties.getAllowedOrigins());
+
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setExposedHeaders(List.of("Authorization"));
+        config.setAllowCredentials(true);
+
         if (this.securityProperties.getAllowedOrigins() != null
                 && !this.securityProperties.getAllowedOrigins().isEmpty()) {
-
-            corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-            corsConfiguration.setAllowedOrigins(this.securityProperties.getAllowedOrigins());
-            corsConfiguration.setAllowedMethods(
-                    Arrays.asList("GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS", "PATCH", "DELETE"));
-            corsConfiguration.setExposedHeaders(List.of("Authorization"));
-            corsConfiguration.setAllowCredentials(true);
+            config.setAllowedOrigins(this.securityProperties.getAllowedOrigins());
         } else {
-            log.warn(
-                    "No cors added, to add an authorized url, change the commons.api.security.allowedOrigins and set allowed origins property");
+            log.warn("No CORS origins configured.");
+            config.setAllowedOriginPatterns(List.of("*")); // use isso para permitir todos
         }
 
-        return corsConfiguration;
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     private List<AntPathRequestMatcher> getAllowedUrls() {
