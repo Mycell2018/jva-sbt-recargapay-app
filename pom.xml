@@ -150,6 +150,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>jva-sbt-recargapay-app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
