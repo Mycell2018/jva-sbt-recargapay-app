@@ -5,7 +5,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Etapa 2: imagem final
-FROM eclipse-temurin:22-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/jva-sbt-recargapay-app.jar app.jar
 EXPOSE 8080
