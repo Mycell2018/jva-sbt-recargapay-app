@@ -38,7 +38,7 @@ commons:
         url: "https://springshop.wiki.github.org/docs"
     security:
       enabled: true
-      allowedClaim: "3fautomacao.com.br"
+      allowedClaim: "https://recargapay.3fautomacao.com.br"
       allowedOrigins: "*"
       roles:
         - "API_RECARGAPAY"
